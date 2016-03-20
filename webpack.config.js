@@ -1,15 +1,32 @@
-module.exports = {
-    entry: "./app/app.js",
+var path = require('path')
+var node_modules = path.resolve(__dirname, 'node_modules')
+var pathToReact = path.resolve(node_modules, 'react/dist/react.min.js')
+var webpack = require('webpack')
+
+config = {
+    entry: ['webpack/hot/dev-server', path.resolve(__dirname, 'app/app.jsx')],
+    resolve: {
+        alias: {
+          'react': pathToReact
+        }
+    },
     output: {
-        path: __dirname + "/public",
-        filename: "bundle.js"
+        path: path.resolve(__dirname, 'build'),
+        filename: 'bundle.js',
+    },
+    resolve: {
+        extensions: ['', '.js', '.jsx']
     },
     module: {
-        loaders: [
-            { 
-                test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader',
-                query: { presets: ['react', 'es2015'] }
-            }
-        ]
+        loaders: [{
+            test: /\.jsx?$/,
+            loader: 'babel'
+        }, {
+            test: /\.css$/, // Only .css files
+            loader: 'style!css' // Run both loaders
+        }],
+        noParse: [pathToReact]
     }
 }
+
+module.exports = config
